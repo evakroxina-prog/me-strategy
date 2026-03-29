@@ -774,7 +774,6 @@
     .hero-left, .hero-right { padding: 60px 24px; }
   }
 </style>
-<script src="https://js-eu1.hsforms.net/forms/embed/144885667.js" defer></script>
 </head>
 <body>
 
@@ -1206,7 +1205,7 @@
     <div class="modal-label">M:E Market Expert</div>
     <h3 class="modal-title">Записаться на звонок</h3>
     <p class="modal-sub">Обсудим вашу ситуацию — 30 минут, без обязательств. Свяжемся в течение 24 часов.</p>
-    <div class="hs-form-frame" data-region="eu1" data-form-id="158b1124-6c0b-42e3-b00b-59994c6c3c2d" data-portal-id="144885667"></div>
+    <div id="hs-form-general"></div>
   </div>
 </div>
 
@@ -1217,7 +1216,7 @@
     <div class="modal-label">Пакет S — Старт</div>
     <h3 class="modal-title">Курс «Понятный маркетинг»</h3>
     <p class="modal-sub">3 встречи по 2 часа. Индивидуально €490 или в мини-группе €290/чел.</p>
-    <div class="hs-form-frame" data-region="eu1" data-form-id="18ae0bcd-1a47-4e35-88cc-4eb200f0d369" data-portal-id="144885667"></div>
+    <div id="hs-form-s"></div>
   </div>
 </div>
 
@@ -1228,7 +1227,7 @@
     <div class="modal-label">Пакет M — Система</div>
     <h3 class="modal-title">Курс + настройка</h3>
     <p class="modal-sub">Курс + 2 недели сопровождения. KPI-дерево, отчёт и регламент под ваш бизнес. €990.</p>
-    <div class="hs-form-frame" data-region="eu1" data-form-id="d07680a7-a5ff-4e76-85f0-8f31c117b8e2" data-portal-id="144885667"></div>
+    <div id="hs-form-m"></div>
   </div>
 </div>
 
@@ -1239,7 +1238,68 @@
     <div class="modal-label">Пакет L — Внедрение</div>
     <h3 class="modal-title">Курс + внедрение с командой</h3>
     <p class="modal-sub">Полное внедрение с командой M:E Market Expert. 6–8 недель. От €2500.</p>
-    <div class="hs-form-frame" data-region="eu1" data-form-id="54acb127-d63d-425d-b7db-c7209792d6ef" data-portal-id="144885667"></div>
+    <div id="hs-form-l"></div>
   </div>
 </div>
-а
+<script>
+  var hsFormsLoaded = {};
+
+  var hsForms = {
+    'modal-general': { targetId: 'hs-form-general', formId: '158b1124-6c0b-42e3-b00b-59994c6c3c2d' },
+    'modal-s':       { targetId: 'hs-form-s',       formId: '18ae0bcd-1a47-4e35-88cc-4eb200f0d369' },
+    'modal-m':       { targetId: 'hs-form-m',       formId: 'd07680a7-a5ff-4e76-85f0-8f31c117b8e2' },
+    'modal-l':       { targetId: 'hs-form-l',       formId: '54acb127-d63d-425d-b7db-c7209792d6ef' }
+  };
+
+  function loadHsScript(callback) {
+    if (window.hbspt) { callback(); return; }
+    var s = document.createElement('script');
+    s.src = 'https://js-eu1.hsforms.net/forms/embed/v2.js';
+    s.charset = 'utf-8';
+    s.type = 'text/javascript';
+    s.onload = callback;
+    document.head.appendChild(s);
+  }
+
+  function createHsForm(modalId) {
+    if (hsFormsLoaded[modalId]) return;
+    var cfg = hsForms[modalId];
+    if (!cfg) return;
+    hsFormsLoaded[modalId] = true;
+    loadHsScript(function() {
+      if (window.hbspt) {
+        hbspt.forms.create({
+          region: 'eu1',
+          portalId: '144885667',
+          formId: cfg.formId,
+          target: '#' + cfg.targetId
+        });
+      }
+    });
+  }
+
+  function openModal(id) {
+    var modalId = id || 'modal-general';
+    document.getElementById(modalId).classList.add('open');
+    document.body.style.overflow = 'hidden';
+    createHsForm(modalId);
+  }
+
+  function closeModal(id) {
+    var modalId = id || 'modal-general';
+    document.getElementById(modalId).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  ['modal-general','modal-s','modal-m','modal-l'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('click', function(e) {
+      if (e.target === this) closeModal(id);
+    });
+  });
+
+  // CSS animations - pure CSS, no JS needed
+</script>
+
+</body>
+</html>
